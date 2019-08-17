@@ -15,7 +15,6 @@ public class Employee {
     private int dept_id;
 
     public Employee() {
-        this.id = 0;
         this.firstName = null;
         this.lastName = null;
         this.address = null;
@@ -24,11 +23,7 @@ public class Employee {
         this.dept_id = 0;
     }
     
-    
-    
-
-    public Employee(int id, String firstName, String lastName, String address, String contact, int salary, int dept_id) {
-        this.id = id;
+    public Employee(String firstName, String lastName, String address, String contact, int salary, int dept_id) {        
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -38,8 +33,6 @@ public class Employee {
     }
     
     
-    
-
     public int getId() {
         return id;
     }
