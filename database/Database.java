@@ -1,67 +1,84 @@
-
 package database;
 
-import com.mysql.jdbc.*;
+//import com.mysql.jdbc.*;
 import employee.models.Employee;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Database {
-        String url = "jdbc:mysql://localhost/ems";
-	String username = "root";
-	String password = "";
-	String sql = "";
-	Statement stmt;
-	ResultSet rs;
-	Connection con;
-            
-        public Database(){
-            try {
-                con = (Connection) DriverManager.getConnection(url,username,password);
-            } catch (SQLException ex) {
-                System.out.println(ex);
-            }
+
+    String url = "jdbc:mysql://localhost/ems";
+    String username = "root";
+    String password = "";
+    String sql = "";
+    ResultSet rs;
+    Connection con;
+
+    public Database() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+        } catch (SQLException ex) {
+            System.out.println(ex);
         }
-        
-        public void addEmployee(Employee e) throws SQLException{
-            sql = "INSERT INTO employee VALUES("+null+",'"+e.getFirstName()+"','"+e.getLastName()+"','"+e.getAddress()+"','"+e.getContact()+"','"+e.getSalary()+"','"+e.getDept_id()+"')";
-            stmt = (Statement) con.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-            
+    }
+
+    //   Admin auth
+    public boolean auth(String username, String password) throws SQLException {
+
+        sql = "SELECT * FROM superuser WHERE username=? AND password=?";
+        java.sql.PreparedStatement pstm = con.prepareStatement(sql);
+        pstm.setString(1, username);
+        pstm.setString(2, password);
+        rs = pstm.executeQuery();
+
+        if (rs.next()) {
+            return true;
         }
-        
-        public List<Employee> getAllEmployee() throws SQLException{
-            Employee e;
-            List<Employee> list = new ArrayList<>();
-            sql = "SELECT * FROM employee";
-            stmt = (Statement) con.createStatement();
-            rs = stmt.executeQuery(sql);
-            while(rs.next()){
-                int id = rs.getInt(1);
-                String firstName = rs.getString(2);
-                String lastName = rs.getString(3);
-                String address = rs.getString(4);
-                String contact = rs.getString(5);
-                int salary = rs.getInt(6);
-                int dept_id = rs.getInt(7);
-                e = new Employee(firstName,lastName,address,contact,salary,dept_id);
-                list.add(e);
-            }
-            rs.close();;
-            stmt.close();
-            return list;
+        return false;
+    }
+
+    // Employee crud
+    public void addEmployee(Employee e) throws SQLException {
+        sql = "INSERT INTO employee(firstName,lastName,address,contact,salary,dept_id) VALUES(?,?,?,?,?,?)";
+        PreparedStatement p = con.prepareStatement(sql);
+        p.setString(1, e.getFirstName());
+        p.setString(2, e.getLastName());
+        p.setString(3, e.getAddress());
+        p.setString(4, e.getContact());
+        p.setInt(5, e.getSalary());
+        p.setInt(6, e.getDept_id());
+        p.executeUpdate();
+        p.close();
+
+    }
+
+    public List<Employee> getAllEmployee() throws SQLException {
+        Employee e;
+        List<Employee> list = new ArrayList<>();
+        sql = "SELECT * FROM employee";
+//        stmt = (Statement) con.createStatement();
+//        rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            int id = rs.getInt(1);
+            String firstName = rs.getString(2);
+            String lastName = rs.getString(3);
+            String address = rs.getString(4);
+            String contact = rs.getString(5);
+            int salary = rs.getInt(6);
+            int dept_id = rs.getInt(7);
+            e = new Employee(firstName, lastName, address, contact, salary, dept_id);
+            list.add(e);
         }
-        
-        public void deleteEmployee(int id) throws SQLException{
-            sql = "DELETE from employee where id ="+id;
-            stmt = (Statement) con.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-        }
+        rs.close();;
+        //stmt.close();
+        return list;
+    }
+
+    public void deleteEmployee(int id) throws SQLException {
+        sql = "DELETE from employee where id =" + id;
+//        stmt = (Statement) con.createStatement();
+//        stmt.executeUpdate(sql);
+//        stmt.close();
+    }
 }
