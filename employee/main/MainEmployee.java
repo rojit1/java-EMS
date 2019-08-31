@@ -2,17 +2,22 @@ package employee.main;
 
 import database.Database;
 import java.sql.SQLException;
-import javax.swing.*;
+import javax.swing.*;   
 
 public class MainEmployee {
 
     public static void main(String[] args) {
         
-        new Home("Employee management system");
+        Dashboard frame = new Dashboard();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        frame.setTitle("Employee Management System");
         
 //        try {
 //            if (login()) {
-//                new Home("Employee management system");
+//                new Dashboard("Employee management system");
 //            } else {
 //                JOptionPane.showMessageDialog(null, "Username or password not valid","Error",JOptionPane.ERROR_MESSAGE);
 //            }
@@ -21,7 +26,7 @@ public class MainEmployee {
 //        }
     }
     
-    
+
     
 
     public static boolean login() throws SQLException {
